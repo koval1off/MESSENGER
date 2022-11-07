@@ -1,12 +1,18 @@
 from datetime import datetime
 from user import USER
 from messege import MAIL
+from typing import Optional
 
 
-def sign_up():
-    """returns user if sign up success"""
+def sign_up() -> Optional[USER]:
+    """
+    creates new user
+    :return: user if sign up success or None
+    """
     while True:
-        login = input("Enter Login: ")
+        login = input("Enter Login(q to quit): ")
+        if login == "q":
+            return None
         email = input("Enter E-mail: ")
         user_pin = input("Create Password: ")
         repeat_pin = input("Repeat Password: ")
@@ -14,8 +20,8 @@ def sign_up():
             user = USER(2, login, user_pin, email)
             return user
         else:
-            continue
-
+            print("Your passwords aren't the same. Please, try again")
+            
 
 def menu(user: USER, mail: MAIL):
     if user is None:
@@ -37,14 +43,14 @@ def menu(user: USER, mail: MAIL):
               "3) New mail\n\t"
               "4) Exit\n\t")
 
-        menu_choice = input("Enter the number of operation: ")
-        if int(menu_choice) == 1:
+        menu_choice = int(input("Enter the number of operation: "))
+        if menu_choice == 1:
             print("You choice the All mails")
-        elif int(menu_choice) == 2:
+        elif menu_choice == 2:
             print("You choice the Unread mails")
-        elif int(menu_choice) == 3:
+        elif menu_choice == 3:
             print("You choice the New mail")
-        elif int(menu_choice) == 4:
+        elif menu_choice == 4:
             return
         else:
             print("Wrong command. Please try again")
@@ -59,8 +65,8 @@ def main():
     print("1)Login in\n"
           "2)Sign up\n"
           "3)Exit\n")
-    start_choise = input("Select: ")
-    if int(start_choise) == 1:
+    start_choise = int(input("Select: "))
+    if start_choise == 1:
         while count_attempts <= 3:
             login = input("Enter Login: ")
             user_pin = input("Enter Password: ")
@@ -73,7 +79,7 @@ def main():
                 count_attempts += 1
             else:
                 break
-    elif int(start_choise) == 2:
+    elif start_choise == 2:
         print("Hello, new user!")
         user = sign_up()
         login_success = True

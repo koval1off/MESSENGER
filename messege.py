@@ -1,6 +1,7 @@
 import mysql.connector
 import os
 from user import USER
+from typing import List
 
 
 class MAIL:
@@ -16,7 +17,7 @@ class MAIL:
         )
         return connection
 
-    def _read_users(self) -> list:
+    def _read_users(self) -> List[USER]:
         users = []
         mydb = self.get_connection()
         mycursor = mydb.cursor()
