@@ -1,21 +1,12 @@
-import mysql.connector
-import os
 from user import USER
 from typing import List
+from db_menager import DB_Menager
 
 
-class MAIL:
+class User_Menager(DB_Menager):
     def __init__(self) -> None:
+        DB_Menager.__init__(self)
         self.users = self._read_users()
-
-    def get_connection(self):
-        connection = mysql.connector.connect(
-            host="localhost",
-            user=f"{os.getenv('USER_DB')}",
-            password=f"{os.getenv('PASS_DB')}",
-            database="messenger"
-        )
-        return connection
 
     def _read_users(self) -> List[USER]:
         users = []
@@ -45,3 +36,15 @@ class MAIL:
     def check_pin(self, user, user_pin) -> bool:
         return user.check_pin(user_pin)
 
+    def print_users(self):
+        for user in self.users:
+            print(f"user_id: {user.user_id}, login: {user.login}, user pin: {user.user_pin}, email: {user.email}\n")
+            print(type(user))
+
+    def get_user_id(self, email):
+        """returns user id by email"""
+        check_mail = [email]
+        mycursor = self.connection.cursor()
+        mycursor.execute("SELECT user_id FROM users WHERE email = %s", (check_mail)) 
+        user_id = mycursor.fetchone()
+        return user_id[0]

@@ -1,7 +1,8 @@
 from datetime import datetime
 from user import USER
-from messege import MAIL
+from user_menager import User_Menager
 from typing import Optional
+from mail_menager import Mail_Menager
 
 
 def sign_up() -> Optional[USER]:
@@ -17,13 +18,13 @@ def sign_up() -> Optional[USER]:
         user_pin = input("Create Password: ")
         repeat_pin = input("Repeat Password: ")
         if user_pin == repeat_pin:
-            user = USER(2, login, user_pin, email)
+            user = USER(login, user_pin, email)
             return user
         else:
             print("Your passwords aren't the same. Please, try again")
             
 
-def menu(user: USER, mail: MAIL):
+def menu(user: USER, mail: User_Menager):
     if user is None:
         return
     
@@ -50,6 +51,7 @@ def menu(user: USER, mail: MAIL):
             print("You choice the Unread mails")
         elif menu_choice == 3:
             print("You choice the New mail")
+            Mail_Menager().create_mail(user.user_id)
         elif menu_choice == 4:
             return
         else:
@@ -57,7 +59,7 @@ def menu(user: USER, mail: MAIL):
 
 
 def main():
-    mail = MAIL()
+    mail = User_Menager()
     user = None
     login_success = False
     count_attempts = 1
