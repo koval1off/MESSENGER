@@ -41,10 +41,18 @@ class User_Menager(DB_Menager):
             print(f"user_id: {user.user_id}, login: {user.login}, user pin: {user.user_pin}, email: {user.email}\n")
             print(type(user))
 
-    def get_user_id(self, email):
-        """returns user id by email"""
+    def get_user_id(self, email) -> int:
+        """returns user_id by email"""
         check_mail = [email]
         mycursor = self.connection.cursor()
         mycursor.execute("SELECT user_id FROM users WHERE email = %s", (check_mail)) 
         user_id = mycursor.fetchone()
         return user_id[0]
+
+    def get_max_user_id(self) -> int:
+        """returns max user_id from db"""
+        mycursor = self.connection.cursor()
+        mycursor.execute("SELECT MAX(user_id) FROM users")
+        user_max_id = mycursor.fetchone()
+        return user_max_id[0]
+        

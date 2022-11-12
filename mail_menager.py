@@ -15,14 +15,32 @@ class Mail_Menager(DB_Menager):
         self.connection.commit()
 
     def get_unread(self, user_id_to):
-        pass
+        mycursor = self.connection.cursor()
+        mycursor.execute("SELECT text FROM emails WHERE user_id_to = %s AND is_read = 1", ([user_id_to]))
+        unread_mails = mycursor.fetchall()
+        return unread_mails
 
-    def get_outgoing(self, user_id_from):
-        pass
+    def print_outgoing(self, user_id_from):
+        mycursor = self.connection.cursor()
+        mycursor.execute("SELECT mail_id, body FROM emails WHERE user_id_from = %s", ([user_id_from]))
+        outgoing_mails = mycursor.fetchall()
+        for mail in outgoing_mails:
+            print(f"--{mail[0]}-- {mail[1]}\n")
+        return None
 
-    def get_incoming(self, user_id_to):
-        pass
+    def print_incoming(self, user_id_to):
+        mycursor = self.connection.cursor()
+        mycursor.execute("SELECT mail_id, body FROM emails WHERE user_id_to = %s", ([user_id_to]))
+        incoming_mails = mycursor.fetchall()
+        for mail in incoming_mails:
+            print(f"--{mail[0]}-- {mail[1]}\n")
+        return None
 
-    def get_all_mails(self, user_id):
-        self.get_outgoing()
-        self.get_incoming()
+    def print_all_mails(self, user_id):
+        return self.print_outgoing(user_id), self.print_incoming(user_id)
+        
+    def delete_mail(self, mail_id):
+        mycursor = self.connection.cursor()
+        mycursor.execute("DELETE FROM emails WHERE mail_id = %s", ([mail_id]))
+        self.connection.commit()
+        
