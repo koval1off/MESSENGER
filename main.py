@@ -1,11 +1,11 @@
 from datetime import datetime
-from user import USER
-from user_menager import User_Menager
+from user import User
+from user_menager import UserManager
 from typing import Optional
-from mail_menager import Mail_Menager
+from mail_menager import MailManager
 
 
-def sign_up() -> Optional[USER]:
+def sign_up() -> Optional[User]:
     """
     creates new user
     :return: user if sign up success or None
@@ -14,18 +14,18 @@ def sign_up() -> Optional[USER]:
         login = input("Enter Login(q to quit): ")
         if login == "q":
             return None
-        user_id = User_Menager().get_max_user_id() + 1
         email = input("Enter E-mail: ")
         user_pin = input("Create Password: ")
         repeat_pin = input("Repeat Password: ")
         if user_pin == repeat_pin:
-            user = USER(user_id, login, user_pin, email)
-            return user
+            user = User(login, user_pin, email)
+            UserManager().write_new_user(user)
+            return UserManager().get_user(login)
         else:
             print("Your passwords aren't the same. Please, try again")
             
 
-def menu(user: USER, mail: User_Menager):
+def menu(user: User, mail: UserManager):
     if user is None:
         return
     
@@ -50,24 +50,27 @@ def menu(user: USER, mail: User_Menager):
 
         menu_choice = int(input("Enter the number of operation: "))
         if menu_choice == 1:
-            print("You choice the All mails\n")
-            Mail_Menager().print_all_mails(user.user_id)
+            print("\nYou choice the All mails\n")
+            mails = MailManager().get_all_mails(user.user_id)
+            MailManager().print_mails(mails)
         elif menu_choice == 2:
-            print("You choice the Unread mails\n")
+            print("\nYou choice the Unread mails\n")
         elif menu_choice == 3:
-            print("You choice Incoming mails\n")
-            Mail_Menager().print_incoming(user.user_id)
+            print("\nYou choice Incoming mails\n")
+            mails = MailManager().get_incoming(user.user_id)
+            MailManager().print_mails(mails)
         elif menu_choice == 4:
-            print("You choice Outgoing mails\n")
-            Mail_Menager().print_outgoing(user.user_id) # here1
+            print("\nYou choice Outgoing mails\n")
+            mails = MailManager().get_outgoing(user.user_id)
+            MailManager().print_mails(mails)
         elif menu_choice == 5:
-            print("You choice the New mail\n")
-            Mail_Menager().create_mail(user.user_id)
+            print("\nYou choice the New mail\n")
+            MailManager().create_mail(user.user_id)
         elif menu_choice == 6:
-            print("You choice Delete mail\n")
-            Mail_Menager().print_all_mails(user.user_id)
+            print("\nYou choice Delete mail\n")
+            MailManager().print_all_mails(user.user_id)
             mail_id = input("Which mail you wanna delete: ")
-            Mail_Menager().delete_mail(mail_id)
+            MailManager().delete_mail(mail_id)
         elif menu_choice == 7:
             return
         else:
@@ -75,7 +78,7 @@ def menu(user: USER, mail: User_Menager):
 
 
 def main():
-    mail = User_Menager()
+    mail = UserManager()
     user = None
     login_success = False
     count_attempts = 1

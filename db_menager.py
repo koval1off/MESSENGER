@@ -2,10 +2,7 @@ import mysql.connector
 import os
 
 
-class DB_Menager():
-    def __init__(self) -> None:
-        self.connection = self.get_connection()
-
+class DBManager():
     def get_connection(self):
         connection = mysql.connector.connect(
             host="localhost",

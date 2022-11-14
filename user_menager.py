@@ -1,22 +1,21 @@
-from user import USER
+from user import User
 from typing import List
-from db_menager import DB_Menager
+from db_menager import DBManager
 
 
-class User_Menager(DB_Menager):
+class UserManager(DBManager):
     def __init__(self) -> None:
-        DB_Menager.__init__(self)
+        self.connection = self.get_connection()
         self.users = self._read_users()
 
-    def _read_users(self) -> List[USER]:
+    def _read_users(self) -> List[User]:
         users = []
-        mydb = self.get_connection()
-        mycursor = mydb.cursor()
+        mycursor = self.connection.cursor()
         mycursor.execute("SELECT * FROM users")
         data_users = mycursor.fetchall()
 
         for data in data_users:
-            user = USER(data[0], data[1], data[2], data[3])
+            user = User(data[1], data[2], data[3], data[0])
             users.append(user)
 
         return users
@@ -49,10 +48,9 @@ class User_Menager(DB_Menager):
         user_id = mycursor.fetchone()
         return user_id[0]
 
-    def get_max_user_id(self) -> int:
-        """returns max user_id from db"""
+    def write_new_user(self, user: User) -> None:
+        """writes new user to DB"""
         mycursor = self.connection.cursor()
-        mycursor.execute("SELECT MAX(user_id) FROM users")
-        user_max_id = mycursor.fetchone()
-        return user_max_id[0]
-        
+        mycursor.execute("INSERT INTO users (login, pass, email) VALUES (%s, %s, %s)", (user.login, user.user_pin, user.email))
+        self.connection.commit()
+    
