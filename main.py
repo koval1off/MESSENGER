@@ -1,8 +1,8 @@
 from datetime import datetime
 from user import User
-from user_menager import UserManager
+from user_manager import UserManager
 from typing import Optional
-from mail_menager import MailManager
+from mail_manager import MailManager
 
 
 def sign_up() -> Optional[User]:
@@ -25,7 +25,7 @@ def sign_up() -> Optional[User]:
             print("Your passwords aren't the same. Please, try again")
             
 
-def menu(user: User, mail: UserManager):
+def menu(user: User, mail: UserManager) -> None:
     if user is None:
         return
     

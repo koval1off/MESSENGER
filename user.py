@@ -5,5 +5,6 @@ class User:
         self.user_pin = user_pin
         self.email = email
 
-    def check_pin(self, user_pin) -> bool:
+    def check_pin(self, user_pin: str) -> bool:
+        """checks user passwd"""
         return user_pin == self.user_pin
