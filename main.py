@@ -12,26 +12,31 @@ def sign_up() -> Optional[User]:
     """
     while True:
         login = input("Enter Login(q to quit): ")
+
         if login == "q":
             return None
+
         email = input("Enter E-mail: ")
         user_pin = input("Create Password: ")
         repeat_pin = input("Repeat Password: ")
         if user_pin == repeat_pin:
+            user_manager = UserManager()
             user = User(login, user_pin, email)
-            UserManager().write_new_user(user)
-            return UserManager().get_user(login)
+            user_manager.write_new_user(user)
+            return user_manager.get_user(login)
         else:
             print("Your passwords aren't the same. Please, try again")
             
 
-def menu(user: User, mail: UserManager) -> None:
+def menu(user: User, user_manager: UserManager) -> None:
     if user is None:
         return
     
-    if mail is None:
+    if user_manager is None:
         return 
     
+    mail_manager = MailManager()
+
     while True:
         time = datetime.now().strftime('%H:%M')
         print(time.center(14, '*'))
@@ -50,27 +55,28 @@ def menu(user: User, mail: UserManager) -> None:
 
         menu_choice = int(input("Enter the number of operation: "))
         if menu_choice == 1:
-            print("\nYou choice the All mails\n")
-            mails = MailManager().get_all_mails(user.user_id)
-            MailManager().print_mails(mails)
+            print("You choice the All mails\n")
+            mails = mail_manager.get_all_mails(user.user_id)
+            mail_manager.print_mails(mails)
         elif menu_choice == 2:
-            print("\nYou choice the Unread mails\n")
+            print("You choice the Unread mails\n")
         elif menu_choice == 3:
-            print("\nYou choice Incoming mails\n")
-            mails = MailManager().get_incoming(user.user_id)
-            MailManager().print_mails(mails)
+            print("You choice Incoming mails\n")
+            mails = mail_manager.get_incoming(user.user_id)
+            mail_manager.print_mails(mails)
         elif menu_choice == 4:
-            print("\nYou choice Outgoing mails\n")
-            mails = MailManager().get_outgoing(user.user_id)
-            MailManager().print_mails(mails)
+            print("You choice Outgoing mails\n")
+            mails = mail_manager.get_outgoing(user.user_id)
+            mail_manager.print_mails(mails)
         elif menu_choice == 5:
-            print("\nYou choice the New mail\n")
-            MailManager().create_mail(user.user_id)
+            print("You choice the New mail\n")
+            mail_manager.create_mail(user.user_id)
         elif menu_choice == 6:
-            print("\nYou choice Delete mail\n")
-            MailManager().print_all_mails(user.user_id)
+            print("You choice Delete mail\n")
+            mails = mail_manager.get_all_mails(user.user_id)
+            mail_manager.print_mails(mails)
             mail_id = input("Which mail you wanna delete: ")
-            MailManager().delete_mail(mail_id)
+            mail_manager.delete_mail(mail_id)
         elif menu_choice == 7:
             return
         else:
@@ -78,7 +84,7 @@ def menu(user: User, mail: UserManager) -> None:
 
 
 def main():
-    mail = UserManager()
+    user_manager = UserManager()
     user = None
     login_success = False
     count_attempts = 1
@@ -91,9 +97,9 @@ def main():
         while count_attempts <= 3:
             login = input("Enter Login: ")
             user_pin = input("Enter Password: ")
-            user = mail.get_user(login)
+            user = user_manager.get_user(login)
             if user:
-                login_success = mail.check_pin(user, user_pin)
+                login_success = user_manager.check_pin(user, user_pin)
             if not login_success:
                 error_text = f"Wrong ID or PASS. {count_attempts}/3."
                 print(error_text + ' Try again') if count_attempts < 3 else print(error_text)
@@ -103,14 +109,15 @@ def main():
     elif start_choise == 2:
         print("Hello, new user!")
         user = sign_up()
-        login_success = True
+        login_success = True if user else False
     else:   # if 3 were selected
         return
 
-    if login_success and user:
-        menu(user, mail)
+    if login_success:
+        menu(user, user_manager)
     else:
         print("Error. Too much fails while entering")
 
 
-main()
+if __name__ == "__main__":
+    main()

@@ -5,6 +5,7 @@ from db_manager import DBManager
 
 class UserManager(DBManager):
     def __init__(self) -> None:
+        super(UserManager, self).__init__()
         self.users = self._read_users()
 
     def _read_users(self) -> List[User]:
