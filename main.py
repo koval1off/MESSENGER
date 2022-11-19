@@ -57,24 +57,30 @@ def menu(user: User, user_manager: UserManager) -> None:
         if menu_choice == 1:
             print("You choice the All mails\n")
             mails = mail_manager.get_all_mails(user.user_id)
-            mail_manager.print_mails(mails)
+            mail_manager.print_all_mails(mails)
         elif menu_choice == 2:
             print("You choice the Unread mails\n")
+            mails = mail_manager.get_unread(user.user_id)
+            mail_manager.print_incoming_mails(mails)
+            if mails:
+                do_read = input("Mark this mails as read?(y/any): ")
+            if do_read.lower() == "y":
+                mail_manager.mark_as_read(mails)
         elif menu_choice == 3:
             print("You choice Incoming mails\n")
             mails = mail_manager.get_incoming(user.user_id)
-            mail_manager.print_mails(mails)
+            mail_manager.print_incoming_mails(mails)
         elif menu_choice == 4:
             print("You choice Outgoing mails\n")
             mails = mail_manager.get_outgoing(user.user_id)
-            mail_manager.print_mails(mails)
+            mail_manager.print_outgoing_mails(mails)
         elif menu_choice == 5:
             print("You choice the New mail\n")
-            mail_manager.create_mail(user.user_id)
+            mail_manager.create_new_mail(user.user_id)
         elif menu_choice == 6:
             print("You choice Delete mail\n")
             mails = mail_manager.get_all_mails(user.user_id)
-            mail_manager.print_mails(mails)
+            mail_manager.print_all_mails(mails)
             mail_id = input("Which mail you wanna delete: ")
             mail_manager.delete_mail(mail_id)
         elif menu_choice == 7:
