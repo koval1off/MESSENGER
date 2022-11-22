@@ -56,9 +56,8 @@ class UserManager(DBManager):
         self.mycursor.execute("SELECT user_id FROM users WHERE email = %s", ([email])) 
         user_id = self.mycursor.fetchone()
         return user_id[0]
-
-    def write_new_user(self, user: User) -> None:
-        """writes new user to DB"""
-        self.mycursor.execute("INSERT INTO users (login, pass, email) VALUES (%s, %s, %s)", (user.login, user.user_pin, user.email))
-        self.connection.commit()
     
+    def create_user(self, login, user_pin, email) -> None:
+        """creates new user to DB"""
+        self.mycursor.execute("INSERT INTO users (login, pass, email) VALUES (%s, %s, %s)", (login, user_pin, email))
+        self.connection.commit()

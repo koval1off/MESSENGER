@@ -4,10 +4,30 @@ from typing import Optional, List
 from user import User
 from user_manager import UserManager
 from mail_manager import MailManager
+import pandas
 
 
-def create_mail():
-    pass
+def create_mail(user_id_from: int):
+    """creates new mail for current user"""
+    i = 1
+    last_senders = MailManager().get_last_senders(user_id_from)
+    for sender in last_senders:
+        print(f"--{i}-- {sender[0]}")
+        i += 1
+
+    user_choice = input("Enter № of last sender or mail you wanna send: ")
+    if '@' in user_choice:
+        email = user_choice
+    elif user_choice.isnumeric():
+        if int(user_choice) > 0 and int(user_choice) <= 5:
+            email = last_senders[int(user_choice) - 1][0]
+    else:
+        print("Wrong command. Try again")
+        return
+    
+    user_id_to = UserManager().get_user_id(email)
+    body = input("You message: ")
+    MailManager().create_mail(user_id_from, user_id_to, body)
 
 
 def print_mails(client_id: str, mails: List[tuple]):
@@ -15,12 +35,19 @@ def print_mails(client_id: str, mails: List[tuple]):
     if not mails:
         print("Seems like you don't have any mails\n")  
 
+    output_data = []
+    headers = ["In/Out", "Id", "Body", "Status"]
+
     for mail in mails:
         mail_from = mail[3]
         direction = "<<--" if mail_from == client_id else "-->>"
         read_status = "[v]" if mail[2] else "[0]"
-        print(f"{direction} ID: {mail[0]} Body: {mail[1]} {read_status}")
-      
+        data = [direction, mail[0], mail[1], read_status]
+        output_data.append(data)
+
+    data = pandas.DataFrame(output_data, columns=headers)
+    print(data.to_string(index=False))
+    
 
 def sign_up() -> Optional[User]:
     """
@@ -38,8 +65,7 @@ def sign_up() -> Optional[User]:
         repeat_pin = input("Repeat Password: ")
         if user_pin == repeat_pin:
             user_manager = UserManager()
-            user = User(login, user_pin, email)
-            user_manager.write_new_user(user)
+            user_manager.create_user(login, user_pin, email)
             return user_manager.get_user(login)
         else:
             print("Your passwords aren't the same. Please, try again")
@@ -91,8 +117,8 @@ def menu(user: User, user_manager: UserManager) -> None:
             mails = mail_manager.get_outgoing(user.user_id)
             print_mails(str(user.user_id), mails)
         elif menu_choice == 5:
-            print("You choice the New mail\n")
-            mail_manager.create_new_mail(user.user_id)
+            print("You choice the New mail\n")  # here
+            create_mail(user.user_id)
         elif menu_choice == 6:
             print("You choice Delete mail\n")
             mails = mail_manager.get_all_mails(user.user_id)
