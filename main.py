@@ -80,12 +80,13 @@ def menu(user: User, user_manager: UserManager) -> None:
     
     mail_manager = MailManager()
 
+    os.system("cls")
     while True:
         time = datetime.now().strftime('%H:%M')
-        print(time.center(14, '*'))
+        print(f"{time:*^20}")
 
         title = "Messenger"
-        print(title.center(15, '*'))
+        print(f"{title:*^20}")
 
         print("Menu:\n\t"
               "1) All mails\n\t"
@@ -98,10 +99,12 @@ def menu(user: User, user_manager: UserManager) -> None:
 
         menu_choice = int(input("Enter the number of operation: "))
         if menu_choice == 1:
+            os.system("cls")
             print("You choice the All mails\n")
             mails = mail_manager.get_all_mails(user.user_id)
             print_mails(str(user.user_id), mails)
         elif menu_choice == 2:
+            os.system("cls")
             print("You choice the Unread mails\n")
             mails = mail_manager.get_unread(user.user_id)
             if mails:
@@ -109,29 +112,35 @@ def menu(user: User, user_manager: UserManager) -> None:
                 if do_read.lower() == "y":
                     mail_manager.mark_as_read(mails)
         elif menu_choice == 3:
+            os.system("cls")
             print("You choice Incoming mails\n")
             mails = mail_manager.get_incoming(user.user_id)
             print_mails(str(user.user_id), mails)
         elif menu_choice == 4:
+            os.system("cls")
             print("You choice Outgoing mails\n")
             mails = mail_manager.get_outgoing(user.user_id)
             print_mails(str(user.user_id), mails)
         elif menu_choice == 5:
-            print("You choice the New mail\n")  # here
+            os.system("cls")
+            print("You choice the New mail\n")
             create_mail(user.user_id)
         elif menu_choice == 6:
+            os.system("cls")
             print("You choice Delete mail\n")
             mails = mail_manager.get_all_mails(user.user_id)
             print_mails(user.user_id, mails)
             mail_id = input("Which mail you wanna delete: ")
             mail_manager.delete_mail(mail_id)
         elif menu_choice == 7:
+            os.system("cls")
             return
         else:
             print("Wrong command. Please try again")
 
 
 def main():
+    os.system("cls")
     user_manager = UserManager()
     user = None
     login_success = False
