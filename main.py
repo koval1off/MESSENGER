@@ -46,7 +46,7 @@ def print_mails(client_id: str, mails: List[tuple]):
         output_data.append(data)
 
     data = pandas.DataFrame(output_data, columns=headers)
-    print(data.to_string(index=False))
+    print(data.to_string(index=False)) 
     
 
 def sign_up() -> Optional[User]:
@@ -177,10 +177,4 @@ def main():
 
 
 if __name__ == "__main__":
-    debug = True
-    if debug:
-        user_manager = UserManager()
-        user = user_manager.get_user("login1")
-        menu(user, user_manager)
-    else:
-        main()
+    main()
