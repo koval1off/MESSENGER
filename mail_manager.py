@@ -3,31 +3,17 @@ from user_manager import UserManager
 from typing import List
 
 class MailManager(DBManager):
-    def create_new_mail(self, user_id_from: int) -> None:
-        """creates new mail and send it to database"""
-        i = 1
+    def get_last_senders(self, user_id_from: int):
+        """returns list of unique last senders' emails"""
         self.mycursor.execute("""SELECT DISTINCT users.email 
                                 FROM emails, users 
                                 WHERE emails.user_id_from = %s 
                                 AND users.user_id = emails.user_id_to limit 0,5""", ([user_id_from]))
         last_senders = self.mycursor.fetchall()
+        return last_senders
 
-        for sender in last_senders:
-            print(f"--{i}-- {sender[0]}")
-            i += 1
-
-        user_choice = input("Enter № of last sender or email you wanna send: ")
-        if "@" in user_choice:
-            email = user_choice
-        elif user_choice.isnumeric():
-            if int(user_choice) > 0 and int(user_choice) <= 5:
-                email = last_senders[int(user_choice) - 1][0]
-        else:
-            print("Wrong command. Try again")
-            return
-        
-        user_id_to = UserManager().get_user_id(email)
-        body = input("Your message: ")
+    def create_mail(self, user_id_from: int, user_id_to: int, body: str):
+        """writes new mail to database"""
         self.mycursor.execute("INSERT INTO emails (user_id_from, user_id_to, body) VALUES (%s, %s, %s)", (user_id_from, user_id_to, body)) 
         self.connection.commit()
 
