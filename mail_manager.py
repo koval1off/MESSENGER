@@ -47,7 +47,6 @@ class MailManager(DBManager):
         all_mails = self.mycursor.fetchall()
         return all_mails
     
-
     def delete_mail(self, mail_id: int) -> None:
         """deletes mail by its id"""
         self.mycursor.execute("DELETE FROM emails WHERE mail_id = %s", ([mail_id]))
